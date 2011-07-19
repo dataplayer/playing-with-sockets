@@ -29,20 +29,15 @@ int main(int argc, char *argv[])
 {
   
   int sock;
-  
-  printf("getting a sock\n");
-  
   sock = socket(PF_INET,SOCK_STREAM,0);
-  
   if (sock < 0)
     exit(1);
 
   int connection;
-  char *url = "vortex.labs.overthewire.org";
   char buffer[256];
   struct sockaddr_in *address = (struct sockaddr_in*) buffer;
 
-  printf("about to run inet_pton \n");
+  // convert IP to byte rep and put in the sockaddr_in address struct
   if( inet_pton(PF_INET, OTW_ADDR, &address[0].sin_addr) != 1 ) 
   {
 	printf("inet_pton failed errno = %i \n", errno);
@@ -53,10 +48,8 @@ int main(int argc, char *argv[])
   address[0].sin_family = PF_INET;
   address[0].sin_port = htons(PORT);
   
-  printf("about to connect \n");
+  // establish a connection
   connection = connect(sock,(struct sockaddr*) address,sizeof(struct sockaddr_in));
-  printf("finished connecting \n");
-
   if (connection != 0)
   {
     printf("connection failed with errno: %i \n", errno);
