@@ -58,18 +58,24 @@ int main(int argc, char *argv[])
 
   // read ints transform and print
   struct four_ints data;
-  int y;
-  y = read(sock,&data,sizeof(data));
+  memset(&data, 0, sizeof(data));
+  int y = 0;
+  int index = 0;
+  int temp;
+  int *idata = (int *) &data; 
+  while ( index < 4 )
+  {
+    y = y + read(sock,idata + index++,sizeof(unsigned int));
+  }
   printf("received ints: %u,%u,%u,%u \nbytes received: %i \n", data.int1,data.int2,data.int3,data.int4,y);
   dump_hex(&data,sizeof(data));
 
   // get ready to add up the ints and send
   int *pdata = (int*) &data;
-  int index;
   unsigned long long sum = 0;
   for (index = 0; index < 4; index++)
-  {
-    sum = pdata[index] + sum;
+  { 
+    sum = sum + (unsigned long long) pdata[index];
   }
  
   // send the sum of the ints
@@ -77,13 +83,9 @@ int main(int argc, char *argv[])
   write(sock,&sum,sizeof(sum));
 
   // read the message from the server
-  char info;
-  y = read(sock,&info,sizeof(info));
-  while ( y > 0 )
-  {
-    printf("%c\n",info);
-    y = read(sock,&info,sizeof(info));
-  }
+  char info[64];
+  read(sock,info,sizeof(info));
+  printf("%s\n",info);
 
   return 0;
 }
