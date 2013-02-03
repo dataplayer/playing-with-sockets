@@ -2,4 +2,4 @@ Title
 ======
 
 + section 1
-+ $\frac{1}{3}$
++ $$\frac{1}{2}$$
